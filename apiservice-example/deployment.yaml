@@ -1,0 +1,21 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: api-extension-server
+  labels:
+    app: api-extension
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: api-extension
+  template:
+    metadata:
+      labels:
+        app: api-extension
+    spec:
+      containers:
+        - name: api-extension-server
+          image: your-api-extension-server-image:latest
+          ports:
+            - containerPort: 443
