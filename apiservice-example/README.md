@@ -14,6 +14,7 @@ source venv/bin/activate
 pip install -r requirements.txt
 gunicorn -c config.py -b 0.0.0.0:8000 server:application
 ```
+**Note**: for the purpose of this demo requirements.txt contains the necessary packages for both the ApiService and for the consumer of the ApiService.
 
 #### Docker
 ```commandline

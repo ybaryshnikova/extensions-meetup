@@ -9,5 +9,5 @@ spec:
   group: example.com
   version: v1alpha1
   insecureSkipTLSVerify: true
-  groupPriorityMinimum: 1000
+  groupPriorityMinimum: 1000 # Kubernetes uses this to resolve conflicts when multiple API groups serve the same resource. A higher value means higher priority.
   versionPriority: 15
