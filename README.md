@@ -52,13 +52,16 @@ Get registered ApiService
 kubectl get apiservice
 ```
 
+#### Custom API example
+See `apiservice-example` directory
+
 #### Access API Server via client libraries
 [Python client example](https://kubernetes.io/docs/tasks/administer-cluster/access-cluster-api/#python-client)
 
 [Access custom API](https://github.com/kubernetes-client/python/blob/master/kubernetes/docs/CustomObjectsApi.md)
 The docs also specify HTTP requests for each API operation.
 
-Go - client-go library
+[Kubernetes Go Client library](https://github.com/kubernetes/client-go)
 
 #### Metrics server API
 Check metrics API before installation:
@@ -92,9 +95,6 @@ See metrics-server components in `apiservice-example/metrics-server-example/metr
 
 ##### metrics-server REST API implementation
 See `pkg/api/pod.go` in metrics-server source code
-
-#### Custom API example
-See `apiservice-example` directory
 
 # References
 [Working with Kubernetes API Series](https://iximiuz.com/en/series/working-with-kubernetes-api/)
