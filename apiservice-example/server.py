@@ -4,16 +4,6 @@ application = Flask(__name__)
 application.url_map.strict_slashes = False
 
 
-@application.route('/', methods=['GET'])
-def root():
-    return {'status': 'success'}, 200
-
-
-@application.route('/cats', methods=['GET'])
-def cats():
-    return [{'color': 'calico'}], 200
-
-
 @application.route('/apis/example.com/v1alpha1', methods=['GET'])
 def api_discovery0():
     # Adjust this response based on your specific API's resources and requirements
