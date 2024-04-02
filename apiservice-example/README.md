@@ -22,9 +22,14 @@ docker run -p 443:443 apiservice-example
 ```
 
 ```commandline
-docker run -p 8000:8000 apiservice-example
+docker run -p 443:443 apiservice-example
 ```
 
+Push to DockerHub
+```commandline
+docker build -t <dockerhub_account>/apiservice-example:latest .         
+docker push <dockerhub_account>/apiservice-example:latest
+```
 
 ### Deactivate the venv
 ```commandline

@@ -51,6 +51,7 @@ kubectl get --raw /api/v1/namespaces/default/pods |  jq '.'
 #### Access API Server via client libraries
 [Python client example](https://kubernetes.io/docs/tasks/administer-cluster/access-cluster-api/#python-client)
 [Access custom API](https://github.com/kubernetes-client/python/blob/master/kubernetes/docs/CustomObjectsApi.md)
+The docs also specify HTTP requests for each API operation.
 Go - client-go library
 
 #### Metrics server API
