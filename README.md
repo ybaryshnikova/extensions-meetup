@@ -47,6 +47,11 @@ Send raw requests:
 kubectl get --raw /api/v1/namespaces/default/pods |  jq '.'
 ```
 
+Get registered ApiService
+```commandline
+kubectl get apiservice
+```
+
 #### Access API Server via client libraries
 [Python client example](https://kubernetes.io/docs/tasks/administer-cluster/access-cluster-api/#python-client)
 
@@ -87,6 +92,9 @@ See metrics-server components in `apiservice-example/metrics-server-example/metr
 
 ##### metrics-server REST API implementation
 See `pkg/api/pod.go` in metrics-server source code
+
+#### Custom API example
+See `apiservice-example` directory
 
 # References
 [Working with Kubernetes API Series](https://iximiuz.com/en/series/working-with-kubernetes-api/)

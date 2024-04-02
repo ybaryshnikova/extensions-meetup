@@ -9,5 +9,5 @@ spec:
   group: example.com
   version: v1alpha1
   insecureSkipTLSVerify: true
-#  groupPriorityMinimum: 1000
-#  versionPriority: 15
+  groupPriorityMinimum: 1000
+  versionPriority: 15

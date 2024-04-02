@@ -16,6 +16,7 @@ spec:
     spec:
       containers:
         - name: api-extension-server
-          image: your-api-extension-server-image:latest
+          image: yuliyab/apiservice-example:latest
+          imagePullPolicy: Always
           ports:
             - containerPort: 443
