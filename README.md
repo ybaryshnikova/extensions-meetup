@@ -5,7 +5,6 @@
 - Accessing the API Server via client libraries
 - Metrics server example
 - Custom Resource Definitions (CRDs)
-- APIService vs CRD
 - Service Catalog API?
 ## Introduction
 The REST API is the fundamental part of Kubernetes. 
@@ -76,6 +75,11 @@ View raw API paths:
 ```commandline
 kubectl proxy
 curl http://localhost:8001/
+```
+
+Get API Versions:
+```commandline
+kubectl api-versions
 ```
 
 Most API follows the REST architectural style.
@@ -158,7 +162,7 @@ New metrics API should be available:
 "/apis/metrics.k8s.io/v1beta1",
 ```
 
-Describe the 
+Describe the metrics API:
 ```commandline
 kubectl describe apiservice v1beta1.metrics.k8s.io
 ```
@@ -169,13 +173,20 @@ See metrics-server components in `apiservice-example/metrics-server-example/metr
 ##### metrics-server REST API implementation
 See `pkg/api/pod.go` in metrics-server source code
 
+##### Autoscaling with metrics-server
+Follow the [tutorial](https://kubernetes.io/docs/tasks/run-application/horizontal-pod-autoscale-walkthrough/)
+
+##### metrics-server cleanup
+```
+helm uninstall metrics-server -n kube-system
+```
+
 ## Custom Resource Definitions (CRDs)
 View all Resources:
 ```commandline
 kubectl api-resources
 ```
 TODO:
-
 
 # References
 [Kubernetes API guide](https://blog.kubesimplify.com/practical-guide-to-kubernetes-api)

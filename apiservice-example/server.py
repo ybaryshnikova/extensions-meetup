@@ -4,6 +4,7 @@ application = Flask(__name__)
 application.url_map.strict_slashes = False
 
 
+# the example does not include authentication and dynamic discovery information
 @application.route('/apis/example.com/v1alpha1', methods=['GET'])
 def api_discovery0():
     return jsonify({

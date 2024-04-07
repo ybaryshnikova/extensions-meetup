@@ -63,10 +63,3 @@ See an example of calling the custom API via the Kubernetes PY client library in
 ```commandline
 kubectl delete -f deployment.yaml -f service.yaml -f api-service.yaml
 ```
-
-### Metrics server
-Install with disabled certificate validation
-```commandline
-helm upgrade --install metrics-server metrics-server/metrics-server --set args="{--kubelet-insecure-tls}" -n kube-system
-```
-Follow the [tutorial](https://kubernetes.io/docs/tasks/run-application/horizontal-pod-autoscale-walkthrough/)
