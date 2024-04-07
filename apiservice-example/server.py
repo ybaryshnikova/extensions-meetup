@@ -6,7 +6,6 @@ application.url_map.strict_slashes = False
 
 @application.route('/apis/example.com/v1alpha1', methods=['GET'])
 def api_discovery0():
-    # Adjust this response based on your specific API's resources and requirements
     return jsonify({
         "kind": "APIResourceList",
         "apiVersion": "v1alpha1",
