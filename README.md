@@ -141,6 +141,10 @@ The docs also specify HTTP requests for each API operation.
 [Kubernetes Go Client library](https://github.com/kubernetes/client-go)
 
 #### Metrics server API
+Now let's look at the metrics-server - one of the most popular addons for Kubernetes
+which extends API Server with the metrics API.
+It provides metrics for pods and nodes.
+It also uses the aggregation layer.
 Check metrics API before installation:
 ```commandline
 curl http://localhost:8001 | grep metrics
