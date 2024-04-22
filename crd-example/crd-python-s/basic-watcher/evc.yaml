@@ -1,0 +1,8 @@
+apiVersion: crd.dev/v1
+kind: EphemeralVolumeClaim
+metadata:
+  name: my-claim
+  labels:
+    env: dev
+spec:
+  size: 1G
