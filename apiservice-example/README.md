@@ -4,9 +4,8 @@
 ### Virtual environment
 ```commandline
 cd apiservice-example
-pip install virtualenv
-virtualenv venv
-source venv/bin/activate
+python3 -m venv venv
+. ./venv/bin/activate
 ```
 
 ### Running the app

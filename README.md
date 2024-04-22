@@ -186,11 +186,13 @@ helm uninstall metrics-server -n kube-system
 ```
 
 ## Custom Resource Definitions (CRDs)
+When you create a new custom resource definition (CRD), the Kubernetes API Server reacts by creating a new RESTful resource path, that can be accessed by an entire cluster or a single project (namespace). 
+As with existing built-in objects, deleting a project deletes all custom objects in that project.
 View all Resources:
 ```commandline
 kubectl api-resources
 ```
-TODO:
+See `crd-examples` directory
 
 # References
 [Kubernetes API guide](https://blog.kubesimplify.com/practical-guide-to-kubernetes-api)
