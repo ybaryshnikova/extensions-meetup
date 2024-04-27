@@ -1,6 +1,6 @@
 from kubernetes import client, config, watch
 import signal
-import os
+import sys
 
 # Configs can be set in Configuration class directly or using helper utility
 config.load_kube_config()
@@ -18,15 +18,15 @@ resource_plural = 'ephemeralvolumeclaims'  # CRD spec.names.plural
 api = client.CustomObjectsApi()
 
 
+# Note: when restarted, the script will replay all events from the beginning.
+# To avoid this, manual state management is required.
 def watch_custom_resource_events():
     w = watch.Watch()
     try:
         # Setup a signal handler to stop watching when receiving SIGINT or SIGTERM
         def stop_watch(signum, frame):
-            print("Stopping the watch...")
-            w.stop()
-            print("Stopped")
-            os._exit(0)
+            print("Exiting gracefully...")
+            sys.exit(0)  # Exit using sys.exit to allow cleanup
 
         signal.signal(signal.SIGINT, stop_watch)
         signal.signal(signal.SIGTERM, stop_watch)
