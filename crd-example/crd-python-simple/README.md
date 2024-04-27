@@ -13,24 +13,82 @@ pip install -r requirements.txt
 `kubectl apply -f crd.yaml`
 
 ### CRD watcher
-`python watch_custom_resource_events.py`
-`kubectl apply -f evc.yaml`
-`kubectl get evc` - get custom resources
-`kubectl get pvc` - get child resources
+Run the watch_custom_resource_events.py script to watch custom resource events in the main thread
+```commandline
+python watch_custom_resource_events.py
+```
+
+Create the custom resource instance
+```commandline
+kubectl apply -f evc.yaml
+```
+Note: controller (+ crd) = Kubernetes operator
+
+List custom resources
+```commandline
+kubectl get evc -v 6
+```
+List child resources
+```commandline
+kubectl get pvc
+```
 
 ### Cleanup
-Remove the CRD and the custom resources
+Remove custom resource instances
 ```commandline
 kubectl delete -f evc.yaml
+```
+Remove CRD
+```commandline
 kubectl delete -f crd.yaml
+```
+or
+```commandline
+kubectl delete crd ephemeralvolumeclaims.crd.dev
 ```
 
 
 ## Threaded watcher with some logic
-TODO: add description
+### Register custom resource definition
+`kubectl apply -f crd.yaml`
 
+### Custom resource watcher
+Run the main.py script to watch and handle custom resource events in a separate thread
+```commandline
+python main.py
+```
+Create a custom resource
+```commandline
+kubectl apply -f evc.yaml
+```
 
+List custom resources
+```commandline
+kubectl get evc -v 6
+```
+List child resources
+```commandline
+kubectl get pvc
+```
 
+### Cleanup
+```commandline
+kubectl delete evc --all
+kubectl delete pvc --all
+```
+
+Remove CRD
+```commandline
+kubectl delete -f crd.yaml
+```
+or
+```commandline
+kubectl delete crd ephemeralvolumeclaims.crd.dev
+```
+
+### Links
+- https://flugel-it.medium.com/building-custom-kubernetes-operators-part-5-building-operators-in-python-141929c3d0db
+- https://github.com/flugel-it/k8s-python-operator
 
 ## Deactivate the venv
 ```commandline
