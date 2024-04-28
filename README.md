@@ -186,13 +186,26 @@ helm uninstall metrics-server -n kube-system
 ```
 
 ## Custom Resource Definitions (CRDs)
-When you create a new custom resource definition (CRD), the Kubernetes API Server reacts by creating a new RESTful resource path, that can be accessed by an entire cluster or a single project (namespace). 
-As with existing built-in objects, deleting a project deletes all custom objects in that project.
+CRDs are a way to make the kube-apiserver recognise new kinds of object.
+When you create a new custom resource definition (CRD), the Kubernetes API Server reacts by creating a new RESTful resource path, 
+that can be accessed by an entire cluster or a single project (namespace).
+
 View all Resources:
 ```commandline
 kubectl api-resources
 ```
 See `crd-examples` directory
+
+## Other
+### Webhooks
+Admission Webhooks allow you to intercept and modify requests to the Kubernetes API server before they are processed. 
+There are two types of admission webhooks: mutating (which can modify objects) and validating (which can validate objects).
+Conversion Webhooks are used with CRDs to handle multiple versions of a resource and convert between them.
+
+### Open Service Broker API
+The Open Service Broker API is a standard way for SaaS platforms to provide services to applications running on cloud native platforms such as Kubernetes.
+They do not necessarily extend the Kubernetes API, but they are a way to provide services to applications running on Kubernetes.
+See [link](https://www.openservicebrokerapi.org/)
 
 # References
 [Kubernetes API guide](https://blog.kubesimplify.com/practical-guide-to-kubernetes-api)

@@ -1,21 +1,44 @@
 # CRD Python example using KOPF library
 ## Install Python dependencies
 
-`python3 -m venv venv`
+`python -m venv venv`
 `. ./venv/bin/activate`
 
+Installing deps from requirements.txt:
+```commandline
+pip install -r requirements.txt
+```
+
+Installing deps from scratch:
 `pip install kubernetes`
 `pip install kopf`
 `pip freeze > requirements.txt`
 
 ## CRD
-`kubectl apply -f crd.yaml`
+```commandline
+kubectl apply -f crd.yaml
+```
 
 ## CRD watcher
-`kopf run ephemeral.py --verbose`
-`kubectl apply -f evc.yaml`
-`kubectl get evc` - get custom resources
-`kubectl get pvc` - get child resources
+
+Run the Kopf based watcher:
+```commandline
+kopf run ephemeral.py --verbose
+```
+
+Create the custom resource instance
+```commandline
+kubectl apply -f evc.yaml
+```
+
+List custom resources
+```commandline
+kubectl get evc -v 6
+```
+List child resources
+```commandline
+kubectl get pvc
+```
 
 ## Advantages compared to no-library implementation
 - Abstracts away boilerplate (event types, check if object exists on reload, run in a thread)
@@ -25,6 +48,16 @@
 - built-in ability to filter on fields, annotations
 
 ## Cleanup
-`kubectl delete crd ephemeralvolumeclaims.kopf.dev`
-`kubectl delete -f crd.yaml`
-`kubectl delete pvc my-claim`
+```commandline
+kubectl delete evc --all
+kubectl delete pvc --all
+```
+
+Remove CRD
+```commandline
+kubectl delete -f crd.yaml
+```
+or
+```commandline
+kubectl delete crd ephemeralvolumeclaims.kopf.dev
+```

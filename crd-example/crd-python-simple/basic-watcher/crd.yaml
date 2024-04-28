@@ -15,7 +15,16 @@ spec:
       - evc
   versions:
     - name: v1
+      # A boolean that indicates whether this version should be served via the API.
+      # If the served flag in a Kubernetes CustomResourceDefinition (CRD) version is set to false,
+      # it means that this particular version of the custom resource is not available to be accessed via the Kubernetes API.
+      # If a non-served version is also the storage version (which is uncommon and typically not recommended),
+      # it means that the data of this version is used internally for storage in etcd, but it cannot be directly accessed or manipulated via the API. Instead, conversions would need to be defined to and from a served version.
       served: true
+      # A boolean indicating if this version is the one that should be stored in the etcd database.
+      # Only one version can be marked as true for storage.
+      # When a version is set as storage: false, existing objects are retained
+      # but must be accessed or manipulated through a version marked as storage: true
       storage: true
       schema:
         openAPIV3Schema:
