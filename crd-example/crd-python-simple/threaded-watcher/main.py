@@ -2,6 +2,8 @@ from threadedwatch import ThreadedWatcher
 from kubernetes import config, client
 import pprint
 import handlers
+import signal
+import sys
 
 # Configs can be set in Configuration class directly or using helper utility
 config.load_kube_config()
@@ -59,4 +61,18 @@ def on_event(event):
 watcher = ThreadedWatcher(custom_api.list_namespaced_custom_object, group, version, namespace, resource_plural, pretty='true')
 watcher.add_handler(on_event)
 watcher.start()
+
+
+# Setup signal handler
+def signal_handler(signum, frame):
+    print("Signal received, stopping watcher.")
+    watcher.stop()
+    print("Watcher successfully stopped")
+    sys.exit(0)
+
+
+signal.signal(signal.SIGINT, signal_handler)
+signal.signal(signal.SIGTERM, signal_handler)
+
+# Wait for the watcher to complete
 watcher.join()

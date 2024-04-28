@@ -10,7 +10,9 @@ pip install -r requirements.txt
 
 ## Basic single threaded watcher
 ### CRD
-`kubectl apply -f crd.yaml`
+```commandline
+kubectl apply -f crd.yaml
+```
 
 ### CRD watcher
 Run the watch_custom_resource_events.py script to watch custom resource events in the main thread
@@ -50,7 +52,9 @@ kubectl delete crd ephemeralvolumeclaims.crd.dev
 
 ## Threaded watcher with some logic
 ### Register custom resource definition
-`kubectl apply -f crd.yaml`
+```commandline
+kubectl apply -f crd.yaml
+```
 
 ### Custom resource watcher
 Run the main.py script to watch and handle custom resource events in a separate thread
