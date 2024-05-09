@@ -51,6 +51,8 @@ Commit and push these files to your repository.
 
 Enable GitHub Pages: in your repository, go to the Settings tab, find the Pages section, and select the branch and folder where your charts are located (usually main or master and / (root)).
 
+![example](github-pages.png)
+
 Use your repo:
 ```commandline
 helm repo add myrepo https://<username>.github.io/<repository>/
