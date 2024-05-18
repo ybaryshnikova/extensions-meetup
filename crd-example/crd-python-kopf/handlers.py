@@ -18,7 +18,7 @@ def _build_claim(name, spec, namespace, logger):
         raise kopf.PermanentError(f"Size must be set. Got {size!r}.")
 
     data = _build_claim_data(name, size)
-    # kopf.adopt(data) # connect evc to pvc
+    kopf.adopt(data) # connect evc to pvc
 
     api = kubernetes.client.CoreV1Api()
     obj = api.create_namespaced_persistent_volume_claim(

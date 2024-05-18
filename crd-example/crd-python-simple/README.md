@@ -1,4 +1,4 @@
-# CRD basic Python example (withou Kopf or a similar library)
+# CRD basic Python example (without Kopf or a similar library)
 
 ## Install Python dependencies
 ```commandline
@@ -19,6 +19,7 @@ Run the watch_custom_resource_events.py script to watch custom resource events i
 ```commandline
 python watch_custom_resource_events.py
 ```
+Note: if stopped and restarted, the script will replay all events from the beginning
 
 Create the custom resource instance
 ```commandline

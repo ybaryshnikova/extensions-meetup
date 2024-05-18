@@ -15,6 +15,16 @@ helm uninstall release1
 helm upgrade release1 ./chart-example
 ```
 
+## View releases
+```commandline
+helm list
+```
+
+## Release history
+```commandline
+helm history release1
+```
+
 ## Run with individual params
 ```commandline
 helm install custom-release ./chart-example --dry-run --debug --set image.pullPolicy=IfNotPresent

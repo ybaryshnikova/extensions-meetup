@@ -5,4 +5,4 @@ metadata:
   labels:
     env: dev
 spec:
-  size: 2G
+  size: 1G
