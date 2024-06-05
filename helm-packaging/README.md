@@ -67,7 +67,7 @@ Use your repo:
 ```commandline
 helm repo add myrepo https://<username>.github.io/<repository>/
 helm repo update
-helm install myrelease myrepo/mychart
+helm install myrelease myrepo/chart-example
 ```
 ## Links
 [Helm tutorial](https://helm.sh/docs/chart_template_guide/getting_started/)

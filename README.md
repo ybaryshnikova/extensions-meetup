@@ -208,6 +208,9 @@ They do not necessarily extend the Kubernetes API, but they are a way to provide
 See [link](https://www.openservicebrokerapi.org/)
 
 # Helm packaging
+Usually there is a need to work with multiple manifests in Kubernetes. E.g. adding an ApiService requires a deployment, a service, and a ApiService manifest.
+Then they may be installed in different environments with different parameters.
+Helm is here to help with that. Also, lots of api extensions are distributed as Helm charts.
 Helm is a package manager for Kubernetes.
 Helm lets you package and deploy applications in Kubernetes.
 A Helm chart is a collection of files organized in a specific directory structure.
