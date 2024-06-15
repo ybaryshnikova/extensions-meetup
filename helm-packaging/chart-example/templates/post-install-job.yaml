@@ -1,0 +1,36 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: wait-for-apiservice
+  annotations:
+    "helm.sh/hook": post-install
+    "helm.sh/hook-weight": "0"
+    "helm.sh/hook-delete-policy": hook-succeeded,hook-failed
+spec:
+  template:
+    spec:
+      serviceAccountName: apiservice-waiter
+      containers:
+        - name: wait-for-apiservice
+          image: bitnami/kubectl:1.21
+          command:
+            - /bin/sh
+            - -c
+            - |
+              set -e
+              echo "Waiting for ApiService to be available..."
+              timeout=120
+              while [ $timeout -gt 0 ]; do
+                status=$(kubectl get apiservice v1alpha1.example.com -o jsonpath='{.status.conditions[?(@.type=="Available")].status}')
+                if [ "$status" = "True" ]; then
+                  echo "ApiService is available."
+                  exit 0
+                fi
+                echo "ApiService is not available yet. Waiting..."
+                sleep 5
+                timeout=$((timeout - 5))
+              done
+              echo "Timeout waiting for ApiService to be available."
+              exit 1
+      restartPolicy: Never
+  backoffLimit: 4
