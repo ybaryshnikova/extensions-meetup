@@ -19,18 +19,7 @@ spec:
             - |
               set -e
               echo "Waiting for ApiService to be available..."
-              timeout=120
-              while [ $timeout -gt 0 ]; do
-                status=$(kubectl get apiservice v1alpha1.example.com -o jsonpath='{.status.conditions[?(@.type=="Available")].status}')
-                if [ "$status" = "True" ]; then
-                  echo "ApiService is available."
-                  exit 0
-                fi
-                echo "ApiService is not available yet. Waiting..."
-                sleep 5
-                timeout=$((timeout - 5))
-              done
-              echo "Timeout waiting for ApiService to be available."
-              exit 1
+              kubectl wait --for=condition=Available --timeout=120s apiservice v1alpha1.example.com
       restartPolicy: Never
   backoffLimit: 4
+

@@ -208,36 +208,14 @@ They do not necessarily extend the Kubernetes API, but they are a way to provide
 See [link](https://www.openservicebrokerapi.org/)
 
 # Helm packaging
-Usually there is a need to work with multiple manifests in Kubernetes. E.g. adding an ApiService requires a deployment, a service, and a ApiService manifest.
-Then they may be installed in different environments with different parameters.
-Helm is here to help with that. Also, lots of api extensions are distributed as Helm charts.
-Helm is a package manager for Kubernetes.
-Helm lets you package and deploy applications in Kubernetes.
-A Helm chart is a collection of files organized in a specific directory structure.
-The configuration information related to a chart is managed in the configuration file `values.yaml`.
-A running instance of a chart with a specific config is called a release.
-Releases are stored as Secrets by default in the namespace of the release directly. Previously, in Helm 2, releases were stored in ConfigMaps.
-Helm uses a templating system based on Go template to render Kubernetes manifests from charts. 
-A chart is a consistent structure separating templates and values.
-
-As a package, a chart can also manage dependencies with other charts. 
-For example, if your application needs a MySQL database to work you can include the chart as a dependency. 
-When Helm runs at the top level of the chart directory it installs whole dependencies. 
-You have just a single command to render and release your application to Kubernetes.
-
-Helm charts use versions to track changes in your manifests – thus you can install a specific chart version for specific infrastructure configurations. 
-Helm keeps a release history of all deployed charts in a dedicated workspace. 
-This makes easier application updates and rollbacks if something wrong happens.
-
-Helm allows you to compress charts. 
-The result of that is an artifact comparable to a Docker image. 
-Then, you can send it to a distant repository for reusability and sharing.
-
 see `helm-packaging` directory.
 
 # References
 [Kubernetes API guide](https://blog.kubesimplify.com/practical-guide-to-kubernetes-api)
+
 [Working with Kubernetes API Series](https://iximiuz.com/en/series/working-with-kubernetes-api/)
+
 [Metrics server tutorial](https://kubernetes.io/docs/tasks/run-application/horizontal-pod-autoscale-walkthrough/)
+
 
 
