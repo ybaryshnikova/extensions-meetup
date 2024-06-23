@@ -9,5 +9,7 @@ Expand the name of the chart.
 Add version.
 */}}
 {{- define "chart-example.version" -}}
-app_version: "{{ .Chart.Version }}"
+labels:
+  app_version: "{{ .Chart.Version }}"
+  app_test: "smth"
 {{- end }}

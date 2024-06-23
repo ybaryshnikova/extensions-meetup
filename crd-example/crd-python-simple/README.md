@@ -2,7 +2,7 @@
 
 ## Install Python dependencies
 ```commandline
-cd crd-python-simple
+cd <example folder>
 python3 -m venv venv
 . ./venv/bin/activate
 pip install -r requirements.txt

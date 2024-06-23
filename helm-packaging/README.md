@@ -95,7 +95,7 @@ spec:
 
 #### install CRD before other resources
 For a CRD, the declaration must be registered before any resources of that CRDs kind(s) can be used. 
-To achieve that put CRDs in `crd` folder. Helm will install them first.
+To achieve that put CRDs in `crds` folder. Helm will install them first.
 These CRDs are not templated, but will be installed by default when running a helm install for the chart. 
 If the CRD already exists, it will be skipped with a warning. 
 To skip the CRD installation step pass the --skip-crds flag.
