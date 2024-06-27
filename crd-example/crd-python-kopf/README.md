@@ -1,6 +1,8 @@
 # CRD Python example using KOPF library
 ## Install Python dependencies
 
+Go to `controller` directory.
+
 `python -m venv venv`
 `. ./venv/bin/activate`
 
@@ -15,18 +17,20 @@ Installing deps from scratch:
 `pip freeze > requirements.txt`
 
 ## CRD
+Go to `manifests` directory
+
 ```commandline
 kubectl apply -f crd.yaml
 ```
 
 ## CRD watcher
 
-Run the Kopf based watcher:
+Run the Kopf based watcher in `controller` directory:
 ```commandline
 kopf run ephemeral.py --verbose
 ```
 
-Create the custom resource instance
+Use `manifests` directory. Create the custom resource instance
 ```commandline
 kubectl apply -f evc.yaml
 ```

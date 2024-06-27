@@ -4,6 +4,16 @@ import kubernetes
 import yaml
 import pprint
 
+def load_kubernetes_config():
+    if os.getenv('KUBERNETES_SERVICE_HOST'):
+        # Running inside a Kubernetes cluster
+        kubernetes.config.load_incluster_config()
+    else:
+        # Running outside a Kubernetes cluster
+        kubernetes.config.load_kube_config()
+
+# Load Kubernetes configuration
+load_kubernetes_config()
 
 def _build_claim_data(name, size):
     path = os.path.join(os.path.dirname(__file__), 'pvc.yaml')
@@ -18,7 +28,7 @@ def _build_claim(name, spec, namespace, logger):
         raise kopf.PermanentError(f"Size must be set. Got {size!r}.")
 
     data = _build_claim_data(name, size)
-    # kopf.adopt(data) # connect evc to pvc
+    kopf.adopt(data) # connect evc to pvc
 
     api = kubernetes.client.CoreV1Api()
     obj = api.create_namespaced_persistent_volume_claim(

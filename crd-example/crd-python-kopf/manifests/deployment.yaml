@@ -1,0 +1,22 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: crd-controller
+  labels:
+    app: crd-controller
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: crd-controller
+  template:
+    metadata:
+      labels:
+        app: crd-controller
+    spec:
+      containers:
+        - name: crd-controller
+          image: yuliyab/crd-example:latest
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 80

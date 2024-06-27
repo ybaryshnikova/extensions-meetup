@@ -1,0 +1,22 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Release.Name }}-api-extension-server
+  labels:
+    app: {{ .Release.Name }}-api-extension
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: {{ .Release.Name }}-api-extension
+  template:
+    metadata:
+      labels:
+        app: {{ .Release.Name }}-api-extension
+    spec:
+      containers:
+        - name: {{ .Release.Name }}-api-extension-server
+          image: {{ .Values.image.repository }}
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          ports:
+            - containerPort: {{ .Values.deployment.containerPort }}
