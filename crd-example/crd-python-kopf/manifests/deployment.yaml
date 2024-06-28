@@ -14,6 +14,7 @@ spec:
       labels:
         app: crd-controller
     spec:
+      serviceAccountName: crd-controller-sa
       containers:
         - name: crd-controller
           image: yuliyab/crd-example:latest

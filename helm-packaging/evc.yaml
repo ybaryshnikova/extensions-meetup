@@ -1,4 +1,8 @@
 apiVersion: kopf.dev/v1
 kind: EphemeralVolumeClaim
 metadata:
-  name: my-claim
+  name: kopf-claim
+  labels:
+    env: dev
+spec:
+  size: 3G

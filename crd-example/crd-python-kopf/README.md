@@ -44,6 +44,23 @@ List child resources
 kubectl get pvc
 ```
 
+## Kopf adopt
+When you use kopf.adopt to create a child resource, 
+it modifies the metadata of the child resource to include an `ownerReferences` field. 
+This field contains information about the parent resource, such as its name, UID, kind, and API version.
+Kubernetes has a built-in garbage collector that uses the `ownerReferences` field to determine which resources should be deleted when their owner is deleted. 
+When the parent resource is deleted, the garbage collector automatically deletes all child resources that have the parent listed in their ownerReferences field.
+
+```yaml
+ownerReferences:
+    - apiVersion: kopf.dev/v1
+      blockOwnerDeletion: true
+      controller: true
+      kind: EphemeralVolumeClaim
+      name: kopf-claim
+      uid: 3e089bfd-fa7e-4d4c-bb5c-95326cc786a2
+```
+
 ## Advantages compared to no-library implementation
 - Abstracts away boilerplate (event types, check if object exists on reload, run in a thread)
 - Automatic Retry on error

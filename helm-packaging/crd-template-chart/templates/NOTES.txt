@@ -11,11 +11,4 @@ To check the CRD status, run:
 
   $ kubectl describe crd ephemeralvolumeclaims.kopf.dev
 
-To check the custom resource instance and the child resource, run:
-  $ kubectl get evc
-  $ kubectl get pvc
-
-!WARNING: CRD is not updated or deleted on respective Helm operations.
-To delete the CRD, run:
-
-  $ kubectl delete crd ephemeralvolumeclaims.kopf.dev
+Note: You don't have to remove CRD manually when deleting the chart, it will uninstall automatically

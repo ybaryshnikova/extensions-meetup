@@ -1,0 +1,25 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: wait-for-crd
+  annotations:
+    "helm.sh/hook": post-install
+    "helm.sh/hook-weight": "0"
+    "helm.sh/hook-delete-policy": hook-succeeded,hook-failed
+spec:
+  template:
+    spec:
+      serviceAccountName: crd-controller-sa
+      containers:
+        - name: wait-for-crd
+          image: bitnami/kubectl:1.21
+          command:
+            - /bin/sh
+            - -c
+            - |
+              set -e
+              echo "Waiting for CRD to be available..."
+              kubectl wait --for=condition=Established --timeout=120s crd ephemeralvolumeclaims.kopf.dev
+      restartPolicy: Never
+  backoffLimit: 1
+

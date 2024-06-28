@@ -42,7 +42,38 @@ helm install release1 ./chart-example
 helm get manifest release1
 ```
 
-### Inspect helm-packaging/chart-example:
+## Update a chart
+```commandline
+helm upgrade release1 ./chart-example
+```
+
+## View releases
+```commandline
+helm list
+```
+
+## Release history
+```commandline
+helm history release1
+```
+
+## Uninstall a release
+```commandline
+helm uninstall release1
+```
+
+## Run with individual params
+```commandline
+helm install custom-release ./chart-example --dry-run --debug --set image.pullPolicy=IfNotPresent
+```
+The `--dry-run` flag of `helm install` and `helm upgrade` is not currently supported for CRDs.
+
+## Debugging
+```commandline
+helm install --debug --dry-run test-run ./chart-example
+```
+
+## A chart with APIService example:
 #### Templates
 Stores parameterized Kubernetes manifest files. The templating language is Go's text/template.
 NOTES.txt is a special template that is rendered when the chart is deployed.
@@ -56,7 +87,7 @@ Contains files that should be ignored when packaging the chart.
 #### charts/
 Contains dependencies for the chart.
 
-### Wait for the deployment to be ready
+## Wait for the deployment to be ready
 #### Wait for Pods, Services, PVCs and Deployments to be ready:
 ```commandline
 helm install release1 ./chart-example --wait
@@ -103,36 +134,47 @@ There is no support at this time for upgrading or deleting CRDs using Helm.
 A possible solution is to store the CRD in a separate chart and install it before the main chart.
 See more info in [Helm docs](https://helm.sh/docs/chart_best_practices/custom_resource_definitions/).
 
-## Update a chart
+## CRD charts
+### CRD with crds folder
+See `helm-packaging/crd-chart`
+
+The chart uses a `crds` folder to make sure the CRD is registered before everything else.
+The instance of a CRD is included into `templates` folder and will be deployed after CRD.
+The custom resource instance manifest `evc.yaml` is included into the chart. 
+You don't need to wait for the controller deployment to be available before installing a custom resource instance thanks to the watch stream replay capability.
+
+Pros:
+- Simple, no additional code to wait for resource creation
+- A single chart can be used to add both CRD and a custom resource instance.
+Cons:
+- CRD Helm functionality is limited: dry run, templating, update and delete won't work.
+
+To delete the chart release, run
 ```commandline
-helm upgrade release1 ./chart-example
+kubectl uninstall <release-name>
+kubectl delete crd ephemeralvolumeclaims.kopf.dev
 ```
 
-## View releases
+### CRD in `templates` folder
+See `helm-packaging/crd-template-chart`
+
+In this chart option CRD is a part of `templates`.
+The custom resource instance is moved outside, 
+and to make sure the chart CRD is installed before the outside custom resource instance is installed,
+a post-install hook is added. The install/upgrade command will wait until the CRD is registered before returning.
+As before there is no need to wait for the controller deployment to be available,
+but it is possible to add `--wait` option to install/upgrade command which will wait for Deployment resources.
 ```commandline
-helm list
+kubectl install release2 ./crd-template-chart --wait
 ```
 
-## Release history
-```commandline
-helm history release1
-```
+Pros:
+- CRD templates support all the usual Helm functionality (upgrade, delete, dry run, template)
+- Can easily wait for the controller Deployment to finish if needed
+Cons:
+- a second chart or separate manifests are required to deploy custom resource instances
 
-## Uninstall a release
-```commandline
-helm uninstall release1
-```
-
-## Run with individual params
-```commandline
-helm install custom-release ./chart-example --dry-run --debug --set image.pullPolicy=IfNotPresent
-```
-The `--dry-run` flag of `helm install` and `helm upgrade` is not currently supported for CRDs.
-
-## Debugging
-```commandline
-helm install --debug --dry-run test-run ./chart-example
-```
+See [docs](https://helm.sh/docs/chart_best_practices/custom_resource_definitions/#install-a-crd-declaration-before-using-the-resource)
 
 ## Some best practices
 .yaml for YAML files and .tpl for helpers are recommended.

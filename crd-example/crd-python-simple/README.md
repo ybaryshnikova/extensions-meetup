@@ -90,6 +90,9 @@ or
 ```commandline
 kubectl delete crd ephemeralvolumeclaims.crd.dev
 ```
+### Replay capability
+The kubernetes Python client library provides a replay capability: when it starts, 
+it issues creation events for all of the existing resources the are watched.
 
 ### Links
 - https://flugel-it.medium.com/building-custom-kubernetes-operators-part-5-building-operators-in-python-141929c3d0db
