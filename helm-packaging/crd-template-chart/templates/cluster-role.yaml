@@ -3,6 +3,7 @@ kind: ClusterRole
 metadata:
   name: crd-controller-clusterrole
 rules:
+  # Note: a single role is used for simplicity. For production RBAC should be more granular
 - apiGroups: ["kopf.dev"]
   resources: ["ephemeralvolumeclaims"]
   verbs: ["get", "list", "watch", "create", "update", "patch", "delete"]

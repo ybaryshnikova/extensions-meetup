@@ -147,7 +147,7 @@ Pros:
 - Simple, no additional code to wait for resource creation
 - A single chart can be used to add both CRD and a custom resource instance.
 Cons:
-- CRD Helm functionality is limited: dry run, templating, update and delete won't work.
+- CRD Helm functionality is limited: dry run, templating, update and delete won't work out of the box.
 
 To delete the chart release, run
 ```commandline
@@ -172,11 +172,52 @@ Pros:
 - CRD templates support all the usual Helm functionality (upgrade, delete, dry run, template)
 - Can easily wait for the controller Deployment to finish if needed
 Cons:
+- controller needs to be able to restart the watch loop in case it starts first and crd is not registered yet
 - a second chart or separate manifests are required to deploy custom resource instances
 
-See [docs](https://helm.sh/docs/chart_best_practices/custom_resource_definitions/#install-a-crd-declaration-before-using-the-resource)
+See [docs](https://helm.sh/docs/chart_best_practices/custom_resource_definitions/#install-a-crd-declaration-before-using-the-resource),
+[hip-0011](https://github.com/helm/community/blob/main/hips/hip-0011.md)
 
-## Some best practices
+### Other approaches that did not work
+Tried to create a CRD as a pre-install hook with order=0 and add a pre-install hook with order=1 to wait for CRD creation.
+```yaml
+apiVersion: apiextensions.k8s.io/v1
+kind: CustomResourceDefinition
+metadata:
+  name: ephemeralvolumeclaims.kopf.dev
+  annotations:
+    "helm.sh/hook": pre-install
+    "helm.sh/hook-weight": "0"
+...
+```
+```yaml
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: wait-for-crd
+  annotations:
+    "helm.sh/hook": pre-install
+    "helm.sh/hook-weight": "1"
+    "helm.sh/hook-delete-policy": hook-succeeded,hook-failed
+spec:
+  template:
+    spec:
+      serviceAccountName: crd-controller-sa
+      containers:
+        - name: wait-for-crd
+          image: bitnami/kubectl:1.21
+          command:
+            - /bin/sh
+            - -c
+            - |
+              set -e
+              echo "Waiting for CRD to be available..."
+              kubectl wait --for=condition=Established --timeout=120s crd ephemeralvolumeclaims.kopf.dev
+      restartPolicy: Never
+  backoffLimit: 1
+```
+
+## Notes on best practices
 .yaml for YAML files and .tpl for helpers are recommended.
 
 Keep your values trees shallow, favoring flatness.
