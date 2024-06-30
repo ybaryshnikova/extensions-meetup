@@ -156,30 +156,33 @@ kubectl delete crd ephemeralvolumeclaims.kopf.dev
 ```
 
 ### CRD in `templates` folder
-See `helm-packaging/crd-template-chart`
+See `helm-packaging/crd-template-chart` and `helm-packaging/crd-controller-chart`
 
 In this chart option CRD is a part of `templates`.
 The custom resource instance is moved outside, 
 and to make sure the chart CRD is installed before the outside custom resource instance is installed,
 a post-install hook is added. The install/upgrade command will wait until the CRD is registered before returning.
-As before there is no need to wait for the controller deployment to be available,
+
+Controller is in a separate chart to make sure that . As before there is no need to wait for the controller deployment to be available,
 but it is possible to add `--wait` option to install/upgrade command which will wait for Deployment resources.
 ```commandline
-kubectl install release2 ./crd-template-chart --wait
+kubectl install release1 ./crd-template-chart
+kubectl install release2 ./crd-controller-chart --wait
 ```
 
 Pros:
 - CRD templates support all the usual Helm functionality (upgrade, delete, dry run, template)
 - Can easily wait for the controller Deployment to finish if needed
-Cons:
-- controller needs to be able to restart the watch loop in case it starts first and crd is not registered yet
-- a second chart or separate manifests are required to deploy custom resource instances
+Cons: 
+- more complicated charts structure, the options are:
+  1. two separate charts: one for crd, one for controller. Controller chart may include custom resources instances, crd - no.
+  2. Alternatively, to keep CRD and its controller together and keep custom resources separately, the controller needs to be able to restart the watch loop in case it starts first and crd is not registered yet
 
 See [docs](https://helm.sh/docs/chart_best_practices/custom_resource_definitions/#install-a-crd-declaration-before-using-the-resource),
 [hip-0011](https://github.com/helm/community/blob/main/hips/hip-0011.md)
 
 ### Other approaches that did not work
-Tried to create a CRD as a pre-install hook with order=0 and add a pre-install hook with order=1 to wait for CRD creation.
+Didn't work: CRD as a pre-install hook with order=0 and add a pre-install hook with order=1 to wait for CRD creation.
 ```yaml
 apiVersion: apiextensions.k8s.io/v1
 kind: CustomResourceDefinition
@@ -215,6 +218,14 @@ spec:
               kubectl wait --for=condition=Established --timeout=120s crd ephemeralvolumeclaims.kopf.dev
       restartPolicy: Never
   backoffLimit: 1
+```
+Didn't work: CRD with a post-install wait hook in a dependency chart, referenced in the main chart like this:
+```yaml
+...
+dependencies:
+  - name: crd-dependent-chart
+    version: 0.1.0
+    repository: "file://../crd-dependent-chart"
 ```
 
 ## Notes on best practices

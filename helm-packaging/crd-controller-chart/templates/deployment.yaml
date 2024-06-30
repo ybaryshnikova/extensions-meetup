@@ -1,18 +1,18 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: crd-controller
+  name: {{ .Values.deployment.name }}
   labels:
-    app: crd-controller
+    app: {{ .Values.deployment.name }}
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: crd-controller
+      app: {{ .Values.deployment.name }}
   template:
     metadata:
       labels:
-        app: crd-controller
+        app: {{ .Values.deployment.name }}
     spec:
       serviceAccountName: crd-controller-sa
       containers:

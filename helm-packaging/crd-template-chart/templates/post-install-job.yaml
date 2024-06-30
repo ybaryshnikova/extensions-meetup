@@ -9,7 +9,7 @@ metadata:
 spec:
   template:
     spec:
-      serviceAccountName: crd-controller-sa
+      serviceAccountName: crd-sa
       containers:
         - name: wait-for-crd
           image: bitnami/kubectl:1.21

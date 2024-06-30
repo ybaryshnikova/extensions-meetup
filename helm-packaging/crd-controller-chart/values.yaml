@@ -4,3 +4,4 @@ image:
 
 deployment:
   containerPort: 80
+  name: crd-controller

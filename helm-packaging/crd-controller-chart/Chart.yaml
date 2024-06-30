@@ -1,8 +1,8 @@
 # specifies the version of the Helm chart specification that the chart is designed to use.
 # apiVersion: v2 is compatible with Helm 3
 apiVersion: v2
-name: crd-template-chart
-description: A Helm chart for Kubernetes with a CRD
+name: crd-controller-chart
+description: A Helm chart for Kubernetes with a CRD controller deployment
 
 # A chart can be either an 'application' or a 'library' chart.
 #

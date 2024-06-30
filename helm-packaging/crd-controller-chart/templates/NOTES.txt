@@ -7,6 +7,6 @@ To learn more about the release, try:
   $ helm status {{ .Release.Name }}
   $ helm get all {{ .Release.Name }}
 
-To check the CRD status, run:
+To check the CRD controller status, run:
 
-  $ kubectl describe crd ephemeralvolumeclaims.kopf.dev
+  $ kubectl describe deployment {{ .Values.deployment.name }}
