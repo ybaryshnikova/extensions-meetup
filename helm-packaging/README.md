@@ -158,12 +158,13 @@ kubectl delete crd ephemeralvolumeclaims.kopf.dev
 ### CRD in `templates` folder
 See `helm-packaging/crd-template-chart` and `helm-packaging/crd-controller-chart`
 
-In this chart option CRD is a part of `templates`.
-The custom resource instance is moved outside, 
-and to make sure the chart CRD is installed before the outside custom resource instance is installed,
-a post-install hook is added. The install/upgrade command will wait until the CRD is registered before returning.
+In this chart option CRD is a part of `templates` and multiple charts are needed.
+The custom resource instance is in a separate chart and a post-install hook is added. 
+The `install`/`upgrade` command will wait until the CRD is registered before returning.
+This way everything installed after the chart will be able to use the CRD.
 
-Controller is in a separate chart to make sure that . As before there is no need to wait for the controller deployment to be available,
+Controller is in a second chart installed after the first one.
+As before there is no need to wait for the controller deployment to be available to start creating custom resources,
 but it is possible to add `--wait` option to install/upgrade command which will wait for Deployment resources.
 ```commandline
 kubectl install release1 ./crd-template-chart
