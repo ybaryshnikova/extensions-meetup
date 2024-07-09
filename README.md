@@ -1,15 +1,25 @@
 # Extending Kubernetes API
 ## Overview
+Part 1:
 - Intro into API Server, the core API, the API structure, Discovery API
 - A simple example of extending the API Server with a custom API
 - Accessing the API Server via client libraries
 - Metrics server example
+
+Part 2:
 - Custom Resource Definitions (CRDs)
-- Service Catalog API?
+- Using Helm
+
 ## Introduction
-The REST API is the fundamental part of Kubernetes. 
-All operations and communications between components, 
-and external user commands are REST API calls that the API Server handles.
+First it is important to look into the Kubernetes API Server and its API structure.
+The design of the API Server establishes the basis that needs to be implemented 
+The API server is an integral part of Kubernetes. It provides mostly REST API (there is also API that does not follow REST conventions, like health checks. This API is used for internal purposes and does not manage resources.).
+See API conventions [here](https://github.com/kubernetes/community/blob/7f3f3205448a8acfdff4f1ddad81364709ae9b71/contributors/devel/sig-architecture/api-conventions.md#verbs-on-resources).
+The REST API handles all of the communication between components and external users, 
+that is all interaction in a Kubernetes cluster is a REST call behind the scenes.
+API Server is the only component that communicates with the etcd database.
+It is deployed on nodes that are configured as control plane nodes and is horizontally scalable.
+All critical components of the cluster are located on these nodes.
 In other words, the API server gives access to the Kubernetes resources and non-resource objects.
 By resources we usually mean objects managed by Kubernetes: pods, services, deployments, etc.
 Non-resource objects are metrics, logs, etc.
@@ -17,16 +27,7 @@ Strictly speaking, according to the docs,
 "A resource is an endpoint in the Kubernetes API that stores a collection of API objects of a certain kind; 
 for example, the built-in pods resource contains a collection of Pod objects".
 
-Note: there is also API that does not follow REST conventions, like health checks. 
-This API is used for internal purposes and does not manage resources.
-
-![Kubernetes API Structure](kube-api-structure2.avif)
-## API Server
-API Server is the only component that communicates with the etcd database.
-It is deployed on nodes that are configured as control plane nodes and is horizontally scalable.
-All critical components of the cluster are located on these nodes.
-
-### Make requests to API Server
+## Requests to the API Server
 
 As mentioned above all the requests to the cluster are REST API calls.
 For example, I want to view all pods in the default namespace:
@@ -65,7 +66,7 @@ kubectl get --raw /api/v1/namespaces/default/pods |  jq '.'
 Normally the direct calls to the API Server are not used. 
 Instead, a typical approach is to use a client library which we'll see later. 
 
-### API Server API paths
+## API Server API paths
 Find API Server host and port:
 ```commandline
 kubectl cluster-info
@@ -82,16 +83,21 @@ Get API Versions:
 kubectl api-versions
 ```
 
+## Kubernetes API structure
+![Kubernetes API Structure](kube-api-structure2.avif)
+
 Most API follows the REST architectural style.
 The API are organized in groups.
 
 API starting with `/api` is the core API group that gives access to standard Kubernetes resources (pods, services, etc).
 API starting with `/apis` is a named group of API. It also includes some core API but is usually the extension API that gives access to custom resources.
-API starting with `/healthz` is the health check API.
+API starting with `/healthz` is the health check API. The healthz endpoint is deprecated (since Kubernetes v1.16).
 API starting with `/livez` is the liveness check API.
 API starting with `/readyz` is the readiness check API.
 API starting with `/metrics` is the metrics API.
 API like 'healthz' and 'readyz' do not follow the REST convention.
+Liveness Probes: Continuous checks throughout the lifecycle of the container to ensure it remains operational. If a liveness probe fails at any point, it indicates a severe problem that requires restarting the container.
+Readiness Probes: Often used at the initial startup and during the lifetime of the container to ensure it is ready to handle requests. These probes can fail temporarily without requiring a restart, simply stopping traffic to the container until it is ready again.
 
 The group is followed by the version of the API. 
 When creating a resource, the API group and version is specified in the `apiVersion` field.
@@ -114,10 +120,11 @@ The Discovery API is particularly useful for:
 - Tooling and Integration: Tools like Kubernetes CLI (kubectl), dashboard UIs, and IDE plugins can use the Discovery API to provide dynamic resource exploration and management capabilities.
 - Custom Controllers and Operators: Developers building custom controllers or operators that manage custom resources can leverage the Discovery API to ensure compatibility with different Kubernetes clusters and versions.
 
-#### API conventions
-See [link](https://github.com/kubernetes/community/blob/7f3f3205448a8acfdff4f1ddad81364709ae9b71/contributors/devel/sig-architecture/api-conventions.md#verbs-on-resources)
+## Extending API server: Aggregation Layer
+The API server supports API aggregation, allowing third-party API extensions to be registered and managed alongside built-in Kubernetes APIs. 
+This extensibility enables the integration of additional features and custom resources.
 
-## Extending API server: APIService and Aggregation Layer
+## Extending API Server: APIService
 `APIService` is a resource that allows you to expose a new API group to the Kubernetes API Server.
 This resource is available in the `apiregistration.k8s.io/v1` API group.
 
@@ -129,10 +136,10 @@ The caveat: core api is shown as APIService too.
 E.g. `v1` is a core API group, but it is also shown as an APIService.
 `kubectl get apiservice v1. -o yaml` will show the details of the core API group but it is not a custom API.
 
-#### Custom API example
+### Custom API example
 See `apiservice-example` directory
 
-#### Access API Server via client libraries
+### Access API Server via client libraries
 [Python client example](https://kubernetes.io/docs/tasks/administer-cluster/access-cluster-api/#python-client)
 
 [Access custom API](https://github.com/kubernetes-client/python/blob/master/kubernetes/docs/CustomObjectsApi.md)
@@ -140,7 +147,7 @@ The docs also specify HTTP requests for each API operation.
 
 [Kubernetes Go Client library](https://github.com/kubernetes/client-go)
 
-#### Metrics server API
+### Metrics server API
 Now let's look at the metrics-server - one of the most popular addons for Kubernetes
 which extends API Server with the metrics API.
 It provides metrics for pods and nodes.
@@ -171,19 +178,26 @@ Describe the metrics API:
 kubectl describe apiservice v1beta1.metrics.k8s.io
 ```
 
-##### metrics-server registration
+#### metrics-server registration
 See metrics-server components in `apiservice-example/metrics-server-example/metrics-server.yaml`
 
-##### metrics-server REST API implementation
+#### metrics-server REST API implementation
 See `pkg/api/pod.go` in metrics-server source code
 
-##### Autoscaling with metrics-server
+#### Autoscaling with metrics-server
 Follow the [tutorial](https://kubernetes.io/docs/tasks/run-application/horizontal-pod-autoscale-walkthrough/)
 
-##### metrics-server cleanup
+#### metrics-server cleanup
 ```
 helm uninstall metrics-server -n kube-system
 ```
+
+## APIService references
+[Kubernetes API guide](https://blog.kubesimplify.com/practical-guide-to-kubernetes-api)
+
+[Working with Kubernetes API Series](https://iximiuz.com/en/series/working-with-kubernetes-api/)
+
+[Metrics server tutorial](https://kubernetes.io/docs/tasks/run-application/horizontal-pod-autoscale-walkthrough/)
 
 ## Custom Resource Definitions (CRDs)
 CRDs are a way to make the kube-apiserver recognise new kinds of object.
@@ -209,13 +223,3 @@ See [link](https://www.openservicebrokerapi.org/)
 
 # Helm packaging
 see `helm-packaging` directory.
-
-# References
-[Kubernetes API guide](https://blog.kubesimplify.com/practical-guide-to-kubernetes-api)
-
-[Working with Kubernetes API Series](https://iximiuz.com/en/series/working-with-kubernetes-api/)
-
-[Metrics server tutorial](https://kubernetes.io/docs/tasks/run-application/horizontal-pod-autoscale-walkthrough/)
-
-
-
