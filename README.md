@@ -27,6 +27,12 @@ Strictly speaking, according to the docs,
 "A resource is an endpoint in the Kubernetes API that stores a collection of API objects of a certain kind; 
 for example, the built-in pods resource contains a collection of Pod objects".
 
+## API Server API paths
+Find API Server host and port:
+```commandline
+kubectl cluster-info
+```
+
 ## Requests to the API Server
 
 As mentioned above all the requests to the cluster are REST API calls.
@@ -55,7 +61,7 @@ As shown above, `api/v1` API was called.
 The same call to pods list can be made directly to the API Server (with kube-proxy):
 ```commandline
 kubectl proxy
-curl localhost:8001/api/v1/namespaces/default/pods |  jq '.'
+curl localhost:8001/api/v1/namespaces/default/pods
 ```
 
 Or sending the raw request:
@@ -64,13 +70,7 @@ kubectl get --raw /api/v1/namespaces/default/pods |  jq '.'
 ```
 
 Normally the direct calls to the API Server are not used. 
-Instead, a typical approach is to use a client library which we'll see later. 
-
-## API Server API paths
-Find API Server host and port:
-```commandline
-kubectl cluster-info
-```
+Instead, a typical approach is to use a client library which we'll see later.
 
 View raw API paths:
 ```commandline
