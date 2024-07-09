@@ -3,19 +3,21 @@
 
 ### Virtual environment
 ```commandline
-cd apiservice-example
-python3 -m venv venv
+cd apiservice-example/extension-server
+python -m venv venv
 . ./venv/bin/activate
 ```
 
 ### Running the app
 ```commandline
 pip install -r requirements.txt
-gunicorn -c config.py -b 0.0.0.0:8000 server:application
+python server.py
 ```
-**Note**: for the purpose of this demo requirements.txt contains the necessary packages for both the ApiService and for the consumer of the ApiService.
+Note: Python apps usually use gunicorn so the launch command could look something like this
+`gunicorn -c config.py -b 0.0.0.0:8000 server:application`
 
 #### Docker
+In the directory containing the Dockerfile run:
 ```commandline
 docker build -t apiservice-example .
 docker run -p 443:443 apiservice-example
@@ -31,6 +33,7 @@ deactivate
 ```
 
 ### Install the custom APIService
+Go to the `api-example` folder
 ```commandline
 cd apiservice-example
 ```
@@ -56,7 +59,24 @@ A simple example of calling the custom API:
 kubectl get --raw /apis/example.com/v1alpha1
 ```
 
-See an example of calling the custom API via the Kubernetes PY client library in `query-service.py`.
+Resources defined in the REST endpoints do not translate into Kubernetes resources. To achieve that use CRD.
+
+##### Kubernetes Python client
+See an example of calling the custom API via the Kubernetes PY client library in `query-api/query-service.py`.
+Go to `query-api` folder
+
+```commandline
+python -m venv venv
+. ./venv/bin/activate
+pip install -r requirements.txt
+python query-service.py
+```
+Explore the docs [Kubernetes Python client custom API](https://github.com/kubernetes-client/python/blob/master/kubernetes/docs/CustomObjectsApi.md).
+
+Deactivate you Python virtual env when done:
+```commandline
+deactivate
+```
 
 #### Remove the APIService
 ```commandline

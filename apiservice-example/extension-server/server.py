@@ -5,6 +5,7 @@ application.url_map.strict_slashes = False
 
 
 # the example does not include authentication and dynamic discovery information
+# Note: in this extension approach resources do not translate into Kubernetes known resources
 @application.route('/apis/example.com/v1alpha1', methods=['GET'])
 def api_discovery0():
     return jsonify({
@@ -22,11 +23,9 @@ def api_discovery0():
         ]
     }), 200
 
-
 @application.route('/apis/example.com/v1alpha1/cats', methods=['GET'])
 def cats():
     return jsonify(["cat1", "cat2"]), 200
-
 
 @application.route('/apis/example.com/v1alpha1/cats/<name>', methods=['GET'])
 def cat(name):

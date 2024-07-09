@@ -100,11 +100,6 @@ API like `healthz` and `readyz` do not follow the REST convention.
 Liveness Probes: Continuous checks throughout the lifecycle of the container to ensure it remains operational. If a liveness probe fails at any point, it indicates a severe problem that requires restarting the container.
 Readiness Probes: Often used at the initial startup and during the lifetime of the container to ensure it is ready to handle requests. These probes can fail temporarily without requiring a restart, simply stopping traffic to the container until it is ready again.
 
-Get API Versions:
-```commandline
-kubectl api-versions
-```
-
 An API group is followed by the version of the API. 
 When creating a resource, the API group and version is specified in the `apiVersion` field.
 
@@ -130,13 +125,25 @@ The Discovery API is particularly useful for:
 - Tooling and Integration: Tools like Kubernetes CLI (kubectl), dashboard UIs, and IDE plugins can use the Discovery API to provide dynamic resource exploration and management capabilities.
 - Custom Controllers and Operators: Developers building custom controllers or operators that manage custom resources can leverage the Discovery API to ensure compatibility with different Kubernetes clusters and versions.
 
+### Get API Versions:
+```commandline
+kubectl api-versions
+```
+When adding a resource manifest we add an apiVersion that contains a group name and a version
+```yaml
+apiVersion: apps/v1
+kind: Deployment
+...
+```
+
 ## Extending API server: Aggregation Layer
 The API server supports API aggregation, allowing third-party API extensions to be registered and managed alongside built-in Kubernetes APIs. 
 This extensibility enables the integration of additional features and custom resources.
 
 ## Extending API Server: APIService
 `APIService` is a resource that allows you to expose a new API group to the Kubernetes API Server.
-This resource is available in the `apiregistration.k8s.io/v1` API group.
+This resource is available in the `/apis/apiregistration.k8s.io/v1` API group.
+`APIService` requires adding what is called an API extension server. You must add an APIService manifest and an appropriate service+deployment.
 
 Get registered APIService
 ```commandline
@@ -146,7 +153,7 @@ The caveat: core api is shown as APIService too.
 E.g. `v1` is a core API group, but it is also shown as an APIService.
 `kubectl get apiservice v1. -o yaml` will show the details of the core API group but it is not a custom API.
 
-### Custom API example
+## Custom API example
 See `apiservice-example` directory
 
 ### Access API Server via client libraries
@@ -164,18 +171,26 @@ It provides metrics for pods and nodes.
 It also uses the aggregation layer.
 Check metrics API before installation:
 ```commandline
+kubectl api-versions | grep metrics
 curl http://localhost:8001 | grep metrics
 ```
 
 Install the metrics server with disabled certificate validation:
 ```commandline
+helm repo add metrics-server https://kubernetes-sigs.github.io/metrics-server/  
 kubectl create namespace metrics-server
-helm upgrade --install metrics-server metrics-server/metrics-server --set args="{--kubelet-insecure-tls}" -n metrics-server
+```
+```commandline
+helm install metrics-server metrics-server/metrics-server --set args="{--kubelet-insecure-tls}" -n metrics-server
 ```
 
 Check metrics API after installation:
 ```commandline
 curl http://localhost:8001 | grep metrics
+```
+or
+```commandline
+kubectl api-versions | grep metrics
 ```
 New metrics API should be available:
 ```text
@@ -204,6 +219,8 @@ helm uninstall metrics-server -n kube-system
 
 ## APIService references
 [Kubernetes API guide](https://blog.kubesimplify.com/practical-guide-to-kubernetes-api)
+
+[Kubernetes Python client custom API](https://github.com/kubernetes-client/python/blob/master/kubernetes/docs/CustomObjectsApi.md)
 
 [Working with Kubernetes API Series](https://iximiuz.com/en/series/working-with-kubernetes-api/)
 
