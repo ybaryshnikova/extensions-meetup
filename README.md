@@ -78,11 +78,6 @@ kubectl proxy
 curl http://localhost:8001/
 ```
 
-Get API Versions:
-```commandline
-kubectl api-versions
-```
-
 ## Kubernetes API structure
 ![Kubernetes API Structure](kube-api-structure2.avif)
 
@@ -90,16 +85,27 @@ Most API follows the REST architectural style.
 The API are organized in groups.
 
 API starting with `/api` is the core API group that gives access to standard Kubernetes resources (pods, services, etc).
+
 API starting with `/apis` is a named group of API. It also includes some core API but is usually the extension API that gives access to custom resources.
+
 API starting with `/healthz` is the health check API. The healthz endpoint is deprecated (since Kubernetes v1.16).
+
 API starting with `/livez` is the liveness check API.
+
 API starting with `/readyz` is the readiness check API.
+
 API starting with `/metrics` is the metrics API.
-API like 'healthz' and 'readyz' do not follow the REST convention.
+
+API like `healthz` and `readyz` do not follow the REST convention.
 Liveness Probes: Continuous checks throughout the lifecycle of the container to ensure it remains operational. If a liveness probe fails at any point, it indicates a severe problem that requires restarting the container.
 Readiness Probes: Often used at the initial startup and during the lifetime of the container to ensure it is ready to handle requests. These probes can fail temporarily without requiring a restart, simply stopping traffic to the container until it is ready again.
 
-The group is followed by the version of the API. 
+Get API Versions:
+```commandline
+kubectl api-versions
+```
+
+An API group is followed by the version of the API. 
 When creating a resource, the API group and version is specified in the `apiVersion` field.
 
 ### Discovery API
@@ -107,9 +113,13 @@ The Discovery API is a special API that gives information about the API groups a
 It comprises several Kubernetes API endpoints under /api and /apis paths:
 
 `/api`: Lists the versions of the core API group.
+
 `/apis`: Lists the available API groups and their versions.
+
 `/api/<version>`: Provides information about the resources in the core group for a specific version.
+
 `/apis/<group>/<version>`: Provides information about the resources in a specific group and version.
+
 #### How It Works
 Clients can query these endpoints to retrieve a list of API resources and operations supported by the Kubernetes API server. This information is returned in a structured format, allowing clients to dynamically discover resources and construct requests based on the capabilities of the API server they are communicating with.
 
