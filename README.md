@@ -12,17 +12,23 @@ Part 2:
 
 ## Introduction
 First it is important to look into the Kubernetes API Server and its API structure.
-The design of the API Server establishes the basis that needs to be implemented 
+The design of the API Server establishes the basis that needs to be implemented.
+
 The API server is an integral part of Kubernetes. It provides mostly REST API (there is also API that does not follow REST conventions, like health checks. This API is used for internal purposes and does not manage resources.).
 See API conventions [here](https://github.com/kubernetes/community/blob/7f3f3205448a8acfdff4f1ddad81364709ae9b71/contributors/devel/sig-architecture/api-conventions.md#verbs-on-resources).
 The REST API handles all of the communication between components and external users, 
 that is all interaction in a Kubernetes cluster is a REST call behind the scenes.
+
 API Server is the only component that communicates with the etcd database.
 It is deployed on nodes that are configured as control plane nodes and is horizontally scalable.
 All critical components of the cluster are located on these nodes.
+
 In other words, the API server gives access to the Kubernetes resources and non-resource objects.
+
 By resources we usually mean objects managed by Kubernetes: pods, services, deployments, etc.
+
 Non-resource objects are metrics, logs, etc.
+
 Strictly speaking, according to the docs,
 "A resource is an endpoint in the Kubernetes API that stores a collection of API objects of a certain kind; 
 for example, the built-in pods resource contains a collection of Pod objects".
