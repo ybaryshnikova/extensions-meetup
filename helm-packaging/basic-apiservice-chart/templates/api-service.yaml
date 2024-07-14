@@ -1,0 +1,15 @@
+apiVersion: apiregistration.k8s.io/v1
+kind: APIService
+metadata:
+  name: v1alpha1.example.com
+  #  {{- template "basic-apiservice-chart.version" }}
+{{ include "basic-apiservice-chart.version" . | indent 2 }}
+spec:
+  service:
+    name: {{ .Release.Name }}-api-extension-server
+    namespace: default
+  group: example.com
+  version: v1alpha1
+  insecureSkipTLSVerify: true
+  groupPriorityMinimum: 1000 # Kubernetes uses this to resolve conflicts when multiple API groups serve the same resource. A higher value means higher priority.
+  versionPriority: 15

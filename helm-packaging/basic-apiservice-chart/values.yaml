@@ -53,9 +53,9 @@ deployment:
 #        - path: /
 #          pathType: ImplementationSpecific
 #  tls: []
-#  #  - secretName: chart-example-tls
+#  #  - secretName: basic-apiservice-chart-tls
 #  #    hosts:
-#  #      - chart-example.local
+#  #      - basic-apiservice-chart.local
 #
 #resources: {}
 #  # We usually recommend not to specify default resources and to leave this as a conscious

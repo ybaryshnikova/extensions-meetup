@@ -10,16 +10,11 @@ Helm is a package manager for Kubernetes. It allows to package and deploy applic
 ## Helm chart structure overview
 A Helm chart is a collection of files organized in a specific directory structure.
 The configuration information related to a chart is managed in the configuration file `values.yaml`.
+
 A running instance of a chart with a specific config is called a release.
 Releases are stored as Secrets by default in the namespace of the release directly. Previously, in Helm 2, releases were stored in ConfigMaps.
 Helm uses a templating system based on Go template to render Kubernetes manifests from charts.
 A chart is a consistent structure separating templates and values.
-
-## Chart dependencies overview
-As a package, a chart can also manage dependencies with other charts.
-For example, if your application needs a MySQL database to work you can include the chart as a dependency.
-When Helm runs at the top level of the chart directory it installs whole dependencies.
-You have just a single command to render and release your application to Kubernetes.
 
 ## Helm versioning overview
 Helm charts use versions to track changes in your manifests – thus you can install a specific chart version for specific infrastructure configurations.
@@ -31,20 +26,35 @@ Helm allows you to compress charts.
 The result of that is an artifact comparable to a Docker image.
 Then, you can send it to a distant repository for reusability and sharing.
 
+## Chart dependencies overview
+As a package, a chart can also manage dependencies with other charts.
+For example, if your application needs a MySQL database to work you can include the chart as a dependency.
+When Helm runs at the top level of the chart directory it installs whole dependencies.
+You have just a single command to render and release your application to Kubernetes.
+
 ## Create a chart
 ```commandline
 helm create chart-example
 ```
 
+## Chart structure:
+#### Templates
+Stores parameterized Kubernetes manifest files. The templating language is Go's text/template.
+NOTES.txt is a special template that is rendered when the chart is deployed.
+_helpers.tpl is a special template that contains reusable templates and functions.
+#### values.yaml
+Default values for the chart. These values can be overridden by passing them in with the --set flag or -f flag.
+#### Chart.yaml
+Contains metadata about the chart, such as the type, version, description.
+#### .helmignore
+Contains files that should be ignored when packaging the chart.
+#### charts/
+Contains dependencies for the chart.
+
 ## Install a chart
 ```commandline
-helm install release1 ./chart-example
+helm install release1 basic-apiservice-chart
 helm get manifest release1
-```
-
-## Update a chart
-```commandline
-helm upgrade release1 ./chart-example
 ```
 
 ## View releases
@@ -56,6 +66,19 @@ helm list
 ```commandline
 helm history release1
 ```
+
+## Update a chart
+```commandline
+helm upgrade release1 basic-apiservice-chart
+helm history release1
+```
+
+## Rollback a release
+Rollback version 2 of a release
+```commandline
+helm rollback release1 2
+```
+
 
 ## Uninstall a release
 ```commandline
@@ -70,31 +93,17 @@ The `--dry-run` flag of `helm install` and `helm upgrade` is not currently suppo
 
 ## Debugging
 ```commandline
-helm install --debug --dry-run test-run ./chart-example
+helm install --debug --dry-run test-run basic-apiservice-chart
 ```
-
-## A chart with APIService example:
-#### Templates
-Stores parameterized Kubernetes manifest files. The templating language is Go's text/template.
-NOTES.txt is a special template that is rendered when the chart is deployed.
-_helpers.tpl is a special template that contains reusable templates and functions.
-#### values.yaml
-Default values for the chart. These values can be overridden by passing them in with the --set flag or -f flag.
-#### Chart.yaml
-Contains metadata about the chart, such as the type, version, description.
-#### .helmignore
-Contains files that should be ignored when packaging the chart.
-#### charts/
-Contains dependencies for the chart.
 
 ## Wait for the deployment to be ready
 #### Wait for Pods, Services, PVCs and Deployments to be ready:
 ```commandline
-helm install release1 ./chart-example --wait
+helm install release1 basic-apiservice-chart --wait
 ```
 #### Wait for jobs:
 ```commandline
-helm install release1 ./chart-example --wait-for-jobs
+helm install release1 basic-apiservice-chart --wait-for-jobs
 ```
 #### Post-install hook to wait for an APIService to be available
 ```yaml
@@ -123,6 +132,7 @@ spec:
       restartPolicy: Never
   backoffLimit: 4
 ```
+See [Chart hooks](https://helm.sh/docs/topics/charts_hooks/)
 
 #### install CRD before other resources
 For a CRD, the declaration must be registered before any resources of that CRDs kind(s) can be used. 
@@ -241,7 +251,7 @@ The .helmignore file is used to specify files you don't want to include in your 
 ## Publish to Github
 Package the chart into a .tgz file
 ```commandline
-helm package chart-example/
+helm package basic-apiservice-chart
 ```
 This command will create a .tgz file in your current directory.
 

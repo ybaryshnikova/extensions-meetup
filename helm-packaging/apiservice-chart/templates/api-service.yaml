@@ -2,7 +2,7 @@ apiVersion: apiregistration.k8s.io/v1
 kind: APIService
 metadata:
   name: v1alpha1.example.com
-{{ include "chart-example.version" . | indent 2 }}
+{{ include "apiservice-chart.version" . | indent 2 }}
 spec:
   service:
     name: {{ .Release.Name }}-api-extension-server

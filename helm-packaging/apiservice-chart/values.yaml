@@ -1,0 +1,12 @@
+# Default values for chart-example.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+image:
+  repository: yuliyab/apiservice-example:latest
+  pullPolicy: Always
+  # Overrides the image tag whose default is the chart appVersion.
+  tag: ""
+
+deployment:
+  containerPort: 443
