@@ -1,6 +1,7 @@
 import os
 import yaml
 from kubernetes import config, client
+import time
 
 
 def _build_claim_data(name, size):
@@ -49,6 +50,7 @@ def update_fn(spec, name, namespace):
     api = client.CoreV1Api()
     api.delete_namespaced_persistent_volume_claim(name=name, namespace=namespace)
     print(f"old PVC child is deleted: {name}")
+    time.sleep(0.05) # a simple workaround for deletion delay, only for demo
 
     _build_claim(name, spec, namespace)
     print(f"PVC child is replaced: {name}")

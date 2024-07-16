@@ -1,6 +1,7 @@
 from kubernetes import client, config, watch
 import signal
 import sys
+import pprint
 
 # Configs can be set in Configuration class directly or using helper utility
 config.load_kube_config()
@@ -36,7 +37,7 @@ def watch_custom_resource_events():
             event_type = event['type']  # ADDED, MODIFIED, DELETED
             resource_name = event['object']['metadata']['name']
             print(f"Event: {event_type}, Name: {resource_name}")
-            print(f"Event: {event}")
+            pprint.pprint(event)
 
     except Exception as e:
         print(f"An error occurred: {e}")

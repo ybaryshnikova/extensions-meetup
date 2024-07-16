@@ -35,6 +35,11 @@ View all Resources:
 kubectl api-resources
 ```
 
+View CRDs
+```commandline
+kubectl get crd
+```
+
 Let's start with simple examples written from scratch.
 ```commandline
 cd crd-python-simple
@@ -105,7 +110,7 @@ kubectl get pvc
 ### Custom resource controller with a new thread
 Run the main.py script to watch and handle custom resource events in a separate thread
 ```commandline
-python main.py
+python threaded-watcher/main.py
 ```
 
 If you did not delete an instance of a custom resource from the previous step, 
