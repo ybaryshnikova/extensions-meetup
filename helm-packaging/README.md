@@ -87,9 +87,9 @@ helm uninstall release1
 
 ## Run with individual params
 ```commandline
-helm install custom-release ./chart-example --dry-run --debug --set image.pullPolicy=IfNotPresent
+helm install custom-release ./basic-apiservice-chart --dry-run --debug --set image.pullPolicy=IfNotPresent
 ```
-The `--dry-run` flag of `helm install` and `helm upgrade` is not currently supported for CRDs.
+The `--dry-run` flag of `helm install` and `helm upgrade` is not currently supported for CRDs folder.
 
 ## Debugging
 ```commandline

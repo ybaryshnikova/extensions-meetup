@@ -21,7 +21,7 @@ A particular URL that is available for a CRD is of no importance.
 
 ### CRD use cases
 Use CRD when you need to extend or encapsulate some behavior to manage object in Kubernetes 
-or create a custom workflow for a resource.
+or create a custom workflow based on resource operations (creation, update, deletion).
 
 An example of such a usage is integrating Prometheus server into Kubernetes. 
 It is designed for collecting and storing metrics in a time-series db. In Kubernetes a popular solution
@@ -46,19 +46,12 @@ cd crd-python-simple
 ```
 
 ## Basic single threaded watcher
-### Install Python dependencies
-```commandline
-python -m venv venv
-. ./venv/bin/activate
-pip install -r requirements.txt
-```
-
+### CRD
 Verify that custom resource is not available yet
 ```commandline
 kubectl get evc
 ```
 
-### CRD
 ```commandline
 kubectl apply -f manifests/crd.yaml
 ```
@@ -77,7 +70,12 @@ kubectl apply -f manifests/evc.yaml
 kubectl get evc
 ```
 
-The simple version of a controller does not do much. Let's see a more elaborate option that runs a watch stream in a separate thread.
+### Install Python dependencies
+```commandline
+python -m venv venv
+. ./venv/bin/activate
+pip install -r requirements.txt
+```
 
 ### Basic CRD controller
 Run the main.py script to watch custom resource events in the main thread (custom resource must be registered)
@@ -94,13 +92,12 @@ List custom resources
 kubectl get evc -v 6
 ```
 
+The simple version of a controller does not do much. Let's see a more elaborate option that runs a watch stream in a separate thread.
 ## Threaded watcher with some logic
 If you deleted the CRD on the previous step 
 ```commandline
 kubectl apply -f manifests/crd.yaml
 ```
-
-
 
 Make sure you don't have a persistent volume claim instance:
 ```commandline
@@ -265,13 +262,13 @@ or require custom API endpoints that go beyond the capabilities of CRDs.
 APIService is considered more performant when working with ETCD.
 
 ## Other
-APIService and CRD are the two ways to extend Kubernetes API. However, there are artiles that consider other items as Kubernetes extensions.
+APIService and CRD are the two ways to extend Kubernetes API. However, there are articles that consider other items as Kubernetes extensions.
 ### Webhooks
 Admission Webhooks allow you to intercept and modify requests to the Kubernetes API server before they are processed. 
 There are two types of admission webhooks: mutating (which can modify objects) and validating (which can validate objects).
 Conversion Webhooks are used with CRDs to handle multiple versions of a resource and convert between them.
 
-### Open Service Broker API
+### Open Service Broker API (former Service Catalog)
 The Open Service Broker API is a standard way for SaaS platforms to provide services to applications running on cloud native platforms such as Kubernetes.
 They do not necessarily extend the Kubernetes API, but they are a way to provide services to applications running on Kubernetes.
 See [link](https://www.openservicebrokerapi.org/)
