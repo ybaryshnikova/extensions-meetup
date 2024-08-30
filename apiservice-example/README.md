@@ -1,10 +1,9 @@
 # Extending Kubernetes API Part 1: API Server, APIService
 ## Overview
 Part 1:
-- Intro into API Server, the core API, the API structure, Discovery API
-- A simple example of extending the API Server with a custom API
+- Intro into API Server (core API and structure, discovery API)
+- Extending the API Server with a custom API via APIService
 - Accessing the API Server via client libraries
-- Metrics server example
 
 Part 2:
 - Custom Resource Definitions (CRDs)
@@ -14,7 +13,7 @@ Part 2:
 First it is important to look into the Kubernetes API Server and its API structure.
 The design of the API Server establishes the basis that needs to be implemented.
 
-The API server is an integral part of Kubernetes. It provides mostly REST API (there is also API that does not follow REST conventions, like health checks. This API is used for internal purposes and does not manage resources.).
+The API server is an integral part of Kubernetes (see [Kubernetes components overview](https://kubernetes.io/docs/concepts/overview/components/)). It provides mostly REST API (there is also API that does not follow REST conventions, like health checks. This API is used for internal purposes and does not manage resources.).
 See API conventions [here](https://github.com/kubernetes/community/blob/7f3f3205448a8acfdff4f1ddad81364709ae9b71/contributors/devel/sig-architecture/api-conventions.md#verbs-on-resources).
 The REST API handles all of the communication between components and external users, 
 that is all interaction in a Kubernetes cluster is a REST call behind the scenes.
@@ -85,7 +84,7 @@ curl http://localhost:8001/
 ```
 
 ## Kubernetes API structure
-![Kubernetes API Structure](kube-api-structure2.avif)
+![Kubernetes API Structure](../kube-api-structure2.avif)
 
 Most API follows the REST architectural style.
 The API are organized in groups.
@@ -159,6 +158,31 @@ The caveat: core api is shown as APIService too.
 E.g. `v1` is a core API group, but it is also shown as an APIService.
 `kubectl get apiservice v1. -o yaml` will show the details of the core API group but it is not a custom API.
 
+## APIService use cases
+The most common case where an APIService is needed is autoscaling based on metrics using Kubernetes built-in resource `HorizontalPodAutoscaler`.
+There are three metrics types:
+- Resource metrics
+- Custom metrics
+- External metrics
+
+See an [example](https://kubernetes.io/docs/tasks/run-application/horizontal-pod-autoscale-walkthrough/). of setting up a simple HPA autoscaling based on resource metric (CPU usage).
+Depending on the type of metrics configured in an HPA, it will poll the endpoints starting with:
+- /apis/metrics.k8s.io/v1beta1
+- /apis/custom.metrics.k8s.io/v1beta2
+- /apis/external.metrics.k8s.io/v1beta1
+respectively.
+
+That is, the HPA expects the `/apis` group to be extended with the API having specific group and version.
+Also a specific contract is expected and query parameters are used by HPA.
+
+Kubernetes does not provide a built-in API for metrics, but instead provides interfaces to implement:
+- [metrics API](https://github.com/kubernetes/metrics),
+- [custom-metrics-apiserver](https://github.com/kubernetes-sigs/custom-metrics-apiserver)
+
+Existing implementations examples:
+•Metrics server
+•Prometheus adapter
+
 ## Custom API example
 
 ### Virtual environment
@@ -197,14 +221,18 @@ Go to the `api-example` folder
 ```commandline
 cd apiservice-example
 ```
-Build the apiservice-example image and push to DockerHub:
+Build the apiservice-example image and push to DockerHub (optional, examples use a ready image):
 ```commandline
 docker build -t <dockerhub_account>/apiservice-example:latest .         
 docker push <dockerhub_account>/apiservice-example:latest
 ```
-Modify the image in `deployment.yaml` to point to your image. Apply the manifests:
+Modify the image in `deployment.yaml` to point to your image if needed. Apply the manifests:
 ```commandline
 kubectl apply -f deployment.yaml -f service.yaml -f api-service.yaml
+```
+Wait for the APIService to be available:
+```yaml
+kubectl wait --for=condition=Available --timeout=120s apiservice v1alpha1.example.com
 ```
 Check the ApiService is registered:
 ```commandline
@@ -253,9 +281,13 @@ Remove the APIService:
 kubectl delete -f deployment.yaml -f service.yaml -f api-service.yaml
 ```
 
-## Metrics server API
-Now let's look at the metrics-server - one of the most popular addons for Kubernetes
-which extends API Server with the metrics API.
+## Metrics Server yaml
+See `apiservice-example/metrics-server-example/metrics-server.yaml`
+**Implementation note**: metrics server does not explicitly define endpoints. 
+Instead it implements Go `apiserver` library interfaces.
+
+## Metrics server usage
+Metrics server extends API Server with the metrics API.
 It provides metrics for pods and nodes.
 It also uses the aggregation layer.
 Check metrics API before installation:
