@@ -1,6 +1,6 @@
 from kubernetes import client, config
 
-# Load the kubeconfig file
+# Load the kubeconfig file to test local calls
 config.load_kube_config()
 
 # see https://github.com/kubernetes-client/python/blob/master/kubernetes/docs/CustomObjectsApi.md

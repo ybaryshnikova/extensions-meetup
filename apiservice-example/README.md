@@ -112,7 +112,7 @@ When creating a resource, the API group and version is specified in the `apiVers
 The Discovery API is a special API that gives information about the API groups and versions available in the cluster.
 It comprises several Kubernetes API endpoints under /api and /apis paths:
 
-`/api`: Lists the versions of the core API group.
+`/api`: Lists the versions of the core API group, e.g. `kubectl get --raw /api`
 
 `/apis`: Lists the available API groups and their versions.
 
