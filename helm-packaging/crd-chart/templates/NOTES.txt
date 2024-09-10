@@ -16,7 +16,6 @@ To check the custom resource instance and the child resource, run:
   $ kubectl get pvc
 
 !WARNING: CRD is not updated or deleted on respective Helm operations.
-TODO: add post-delete hook to delete the CRD
 To delete the CRD, run:
 
   $ kubectl delete crd ephemeralvolumeclaims.kopf.dev
